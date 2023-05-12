@@ -1,10 +1,11 @@
 import { getMovieById } from 'API';
 import { useEffect, useState } from 'react';
-import { Link, Outlet, useParams } from 'react-router-dom';
+import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 
 const MoviesDetails = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState([]);
+  const location = useLocation();
   useEffect(() => {
     fetchDetalis(id);
   }, [id]);
@@ -19,12 +20,12 @@ const MoviesDetails = () => {
     }
   };
 
-  console.log(movie);
   if (movie.length !== 0) {
     const genres = movie.genres.map(genre => genre.name).join(', ');
 
     return (
       <main>
+        <Link to={location.state?.from ?? '/'}>↤ Go back</Link>
         <img
           src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
           alt={`${movie.original_title}`}
