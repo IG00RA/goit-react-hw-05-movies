@@ -2,23 +2,29 @@ import { getMovieByQuery } from 'API';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 
-const Movies = () => {
+const Movies = ({ changeError }) => {
   const [movie, setMovie] = useState([]);
-  const [isSearch, setIsSearch] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const movieQuery = searchParams.get('query') ?? '';
   const location = useLocation();
+  const [isSearch, setIsSearch] = useState(false);
+  const [isLoad, setIsLoad] = useState(false);
 
   useEffect(() => {
-    if (movieQuery && isSearch) {
+    if (isSearch) {
       fetchDetalis(movieQuery);
     }
-  }, [movieQuery, isSearch]);
+  }, [isSearch, movieQuery]);
 
   const fetchDetalis = async input => {
     try {
-      const getDetalis = await getMovieByQuery(input);
-      setMovie(getDetalis.data.results);
+      if (input.length > 0) {
+        const getDetalis = await getMovieByQuery(input);
+        setMovie(getDetalis.data.results);
+        if (getDetalis.data.total_results === 0) {
+          setIsLoad(true);
+        }
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -39,9 +45,12 @@ const Movies = () => {
         onSubmit={e => {
           e.preventDefault();
           setIsSearch(true);
+          changeError(false);
+          setIsLoad(false);
         }}
       >
         <input
+          autoFocus
           name="search"
           placeholder="Please enter film name"
           value={movieQuery}
@@ -49,6 +58,7 @@ const Movies = () => {
         />
         <button type="submit">Search</button>
       </form>
+      {isLoad && <p style={{ color: 'red' }}>Enter another query</p>}
       <ul>
         {movie.map(movie => (
           <li key={movie.id}>

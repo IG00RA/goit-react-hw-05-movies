@@ -21,11 +21,15 @@ export const Review = () => {
   if (movie.length === 0) {
     return "We don't have any reviews for this movie";
   } else {
-    return movie.map(mov => (
-      <div>
-        <h2>Author: {mov.author}</h2>
-        <p>{mov.content}</p>
-      </div>
-    ));
+    return (
+      <ul>
+        {movie.map(mov => (
+          <li key={mov.id}>
+            <h2>Author: {mov.author}</h2>
+            <p>{mov.content}</p>
+          </li>
+        ))}
+      </ul>
+    );
   }
 };
