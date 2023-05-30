@@ -11,7 +11,13 @@ const Movies = ({ changeError }) => {
   const [isLoad, setIsLoad] = useState(false);
 
   useEffect(() => {
-    if (isSearch) {
+    if (movieQuery.length !== 0) {
+      setIsSearch(true);
+    }
+  }, [movieQuery.length]);
+
+  useEffect(() => {
+    if (isSearch || movieQuery.length !== 0) {
       fetchDetalis(movieQuery);
     }
   }, [isSearch, movieQuery]);
@@ -47,6 +53,7 @@ const Movies = ({ changeError }) => {
           setIsSearch(true);
           changeError(false);
           setIsLoad(false);
+          // updateQueryString(e);
         }}
       >
         <input
