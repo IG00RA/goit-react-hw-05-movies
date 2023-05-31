@@ -7,20 +7,21 @@ const Movies = ({ changeError }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const movieQuery = searchParams.get('query') ?? '';
   const location = useLocation();
-  const [isSearch, setIsSearch] = useState(false);
   const [isLoad, setIsLoad] = useState(false);
+  const [firstLoad] = useState(1);
+  const [input, setInput] = useState('');
+
+  useEffect(() => {
+    if (firstLoad === 1) {
+      fetchDetalis(movieQuery);
+    }
+  }, [firstLoad, movieQuery]);
 
   useEffect(() => {
     if (movieQuery.length !== 0) {
-      setIsSearch(true);
+      setInput(movieQuery);
     }
-  }, [movieQuery.length]);
-
-  useEffect(() => {
-    if (isSearch || movieQuery.length !== 0) {
-      fetchDetalis(movieQuery);
-    }
-  }, [isSearch, movieQuery]);
+  }, [movieQuery]);
 
   const fetchDetalis = async input => {
     try {
@@ -29,20 +30,22 @@ const Movies = ({ changeError }) => {
         setMovie(getDetalis.data.results);
         if (getDetalis.data.total_results === 0) {
           setIsLoad(true);
+        } else {
+          setIsLoad(false);
         }
       }
     } catch (error) {
       console.log(error);
     } finally {
-      setIsSearch(false);
     }
   };
 
   const updateQueryString = e => {
-    if (e.target.value === '') {
+    if (e.target.elements.search.value === '') {
       return setSearchParams({});
     }
-    setSearchParams({ query: e.target.value });
+    setSearchParams({ query: e.target.elements.search.value });
+    // e.target.elements.search.value = movieQuery;
   };
 
   return (
@@ -50,18 +53,17 @@ const Movies = ({ changeError }) => {
       <form
         onSubmit={e => {
           e.preventDefault();
-          setIsSearch(true);
           changeError(false);
           setIsLoad(false);
-          // updateQueryString(e);
+          updateQueryString(e);
         }}
       >
         <input
           autoFocus
           name="search"
           placeholder="Please enter film name"
-          value={movieQuery}
-          onChange={e => updateQueryString(e)}
+          value={input}
+          onChange={e => setInput(e.target.value)}
         />
         <button type="submit">Search</button>
       </form>
