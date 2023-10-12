@@ -5,9 +5,6 @@ export const Section = styled.section`
   padding-bottom: 20px;
   margin: 0 auto;
   width: 100%;
-
-  /* @media screen and (min-width: 768px) {  } */
-  /* @media screen and (min-width: 1440px) {  } */
 `;
 
 export const Container = styled.div`

@@ -37,7 +37,8 @@ function Layout() {
           <Nav>
             <Logo href="#">
               <LogoText>
-                <LogoTextSecond>GOIT</LogoTextSecond>FLIX
+                Movie
+                <LogoTextSecond> Search </LogoTextSecond>Platform
               </LogoText>
             </Logo>
             <Menu>
