@@ -9,6 +9,8 @@ export const Section = styled.section`
   padding-bottom: 20px;
   margin: 0 auto;
   width: 100%;
+  background-position: center;
+  background-size: cover;
   background-image: linear-gradient(
       to top,
       rgba(35, 34, 42, 0.9),

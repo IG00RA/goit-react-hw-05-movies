@@ -93,10 +93,10 @@ function Upcoming() {
             disableOnInteraction: false,
           }}
           coverflowEffect={{
-            rotate: 50,
+            rotate: 90,
             stretch: 0,
             depth: 100,
-            modifier: 1,
+            modifier: 4,
             slideShadows: true,
           }}
           modules={[Autoplay, Keyboard, EffectCoverflow]}
