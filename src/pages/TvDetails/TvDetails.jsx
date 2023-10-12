@@ -2,35 +2,33 @@ import { useState, useEffect, Suspense } from 'react';
 import { Outlet, useParams, Link } from 'react-router-dom';
 import {
   Title,
-  Tagline,
   MainWrapper,
   MovieDetailsWrapper,
-  Overview,
   LinksWrap,
+  Overview,
   Span,
   ImageWrapper,
   Poster,
   NoPoster,
-} from './MovieDetails.styled';
-import { getMoviesDetails } from 'services/moviesDetailsAPI';
+} from './TvDetails.styled';
 import Button from 'components/Button/Button';
+import { getTvDetails } from 'services/tvDetailsAPI';
 import { useLocation } from 'react-router-dom';
 import { useRef } from 'react';
 import SectionTemplate from 'components/SectionTemplate/SectionTemplate';
 import Loader from 'components/Loader/Loader';
 import { motion } from 'framer-motion';
 
-function MovieDetails() {
-  const [movie, setMovie] = useState(null);
+function TvDetails() {
+  const [tv, setTv] = useState(null);
   const { movieId } = useParams();
-
   const location = useLocation();
   const backLinkHref = useRef(location.state?.from ?? '/');
 
   useEffect(() => {
-    getMoviesDetails(movieId)
+    getTvDetails(movieId)
       .then(res => {
-        setMovie(res);
+        setTv(res);
       })
       .catch(err => {
         console.log(err);
@@ -38,7 +36,7 @@ function MovieDetails() {
       .finally(() => {});
   }, [movieId]);
 
-  if (!movie) {
+  if (!tv) {
     return;
   }
 
@@ -52,57 +50,52 @@ function MovieDetails() {
         <Link to={backLinkHref.current}>
           <Button>Go Back</Button>
         </Link>
-        <Title>{movie?.title}</Title>
-        <Tagline>{movie?.tagline}</Tagline>
+        <Title>{tv?.name}</Title>
         <MainWrapper>
+          {/* <div>
+            <img
+              src={`http://image.tmdb.org/t/p/w300${tv['poster_path']}`}
+              alt={tv?.name}
+            />
+          </div> */}
           <ImageWrapper>
-            {movie['poster_path'] ? (
+            {tv['poster_path'] ? (
               <Poster
-                src={`http://image.tmdb.org/t/p/w300${movie['poster_path']}`}
-                alt={movie?.title}
+                src={`http://image.tmdb.org/t/p/w300${tv['poster_path']}`}
+                alt={tv?.title}
               />
             ) : (
               <NoPoster />
             )}
           </ImageWrapper>
           <MovieDetailsWrapper>
-            {movie['vote_average'] ? (
-              <p>
-                <Span>Rating:</Span>{' '}
-                {Math.round(movie['vote_average'] * 10) / 10}
-              </p>
-            ) : null}
-            {movie['release_date'] ? (
-              <p>
-                <Span>Release:</Span> {movie['release_date']}
-              </p>
-            ) : null}
+            <p>
+              <Span>Rating:</Span> {tv['vote_average']}
+            </p>
+            <p>
+              <Span>First air date:</Span> {tv['first_air_date']}
+            </p>
+            <p>
+              <Span>Last air date:</Span> {tv['last_air_date']}
+            </p>
+            <p>
+              <Span>Number of seasons:</Span> {tv?.number_of_seasons}
+            </p>
+            <p>
+              <Span>Number of episodes:</Span> {tv?.number_of_episodes}
+            </p>
+            <p>
+              <Span>Country:</Span> {tv['origin_country'][0]}
+            </p>
 
-            {movie['production_countries'] ? (
-              <p>
-                <Span>Country:</Span> {movie['production_countries'][0].name}
-              </p>
-            ) : null}
-
-            {movie.budget ? (
-              <p>
-                <Span>Budget:</Span> {movie.budget}
-              </p>
-            ) : null}
-
-            {movie['genres'] && movie['genres'].length > 0 ? (
+            {tv['genres'] && tv['genres'].length > 0 ? (
               <p>
                 <Span>Genres:</Span>{' '}
-                {movie['genres'].map(genre => genre.name).join(', ')}
-              </p>
-            ) : null}
-            {movie.runtime ? (
-              <p>
-                <Span>Runtime:</Span> {movie.runtime} min
+                {tv['genres'].map(genre => genre.name).join(', ')}
               </p>
             ) : null}
 
-            <Overview>{movie?.overview}</Overview>
+            <Overview>{tv?.overview}</Overview>
           </MovieDetailsWrapper>
         </MainWrapper>
       </SectionTemplate>
@@ -126,4 +119,4 @@ function MovieDetails() {
     </motion.div>
   );
 }
-export default MovieDetails;
+export default TvDetails;
